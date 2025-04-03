@@ -1,0 +1,80 @@
+class Solution {
+public:
+    int minStoneSum(vector<int>& piles, int k) {
+        priority_queue<int> maxHeap(piles.begin(), piles.end());
+
+        for (int i = 0; i < k; i++) {
+            int maxPile = maxHeap.top();
+            maxHeap.pop(); 
+
+            int stonesToRemove = maxPile / 2;
+            maxHeap.push(maxPile - stonesToRemove);
+        }
+
+        int totalRemaining = 0;
+        while (!maxHeap.empty()) {
+            totalRemaining += maxHeap.top();
+            maxHeap.pop();
+        }
+
+        return totalRemaining; 
+    }
+};
+
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        int operations = 0; 
+        int n = nums.size(); 
+
+        for (int i = 1; i < n; i++) {
+            if (nums[i] <= nums[i - 1]) {
+                int increment = nums[i - 1] - nums[i] + 1;
+                operations += increment; 
+                nums[i] += increment; 
+            }
+        }
+        
+        return operations; 
+    }
+};
+
+
+class Solution {
+public:
+    int maxTaskAssign(vector<int>& tasks, vector<int>& workers, int pills, int strength) {
+        sort(tasks.begin(), tasks.end());
+        sort(workers.begin(), workers.end());
+
+        int n = tasks.size();
+        int m = workers.size();
+        int completedTasks = 0;
+        int workerIndex = 0;
+
+        vector<bool> usedPills(m, false);
+
+        for (int i = 0; i < n; i++) {
+            while (workerIndex < m && workers[workerIndex] < tasks[i]) {
+                workerIndex++;
+            }
+
+            if (workerIndex < m) {
+                completedTasks++;
+                workerIndex++; 
+            } else if (pills > 0) {
+                for (int j = 0; j < m; j++) {
+                    if (!usedPills[j] && workers[j] + strength >= tasks[i]) {
+                        completedTasks++;
+                        usedPills[j] = true; 
+                        pills--; 
+                        break; 
+                    }
+                }
+            }
+        }
+
+        return completedTasks; 
+    }
+};
+
